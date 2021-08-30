@@ -60,7 +60,7 @@ namespace DataChecker
             var tokenCount = 18446744073709551615;
 
             var current = min;
-            var count = (long) (tokenCount / Program.Ranges);
+            var count = (long) (tokenCount / (ulong)Program.Ranges);
             var tokenBlock = new BufferBlock<Tuple<long, long>>(new DataflowBlockOptions
                 { BoundedCapacity = Program.OriginReadParallelism, EnsureOrdered = false });
             var readPipe = new ReadPipe(origin, checkPipe.Block, tokenBlock);
