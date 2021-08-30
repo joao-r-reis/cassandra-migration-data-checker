@@ -53,7 +53,7 @@ namespace DataChecker
                     {
                         var targetRow = (await targetRowTask.ConfigureAwait(false)).SingleOrDefault();
 
-                        if (object.Equals(rows[i]["key"], targetRow["key"]) &&
+                        if (targetRow != null && object.Equals(rows[i]["key"], targetRow["key"]) &&
                             object.Equals(rows[i]["value"], targetRow["value"]) &&
                             object.Equals(rows[i]["value_ttl"], targetRow["value_ttl"]))
                         {
