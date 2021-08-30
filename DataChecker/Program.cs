@@ -12,13 +12,13 @@ namespace DataChecker
         public const int OriginReadParallelism = 4;
         public const int TargetReadParallelism = 32;
         public const int TargetReadBatch = 512;
-        public const int Ranges = 10000;
+        public static int Ranges = 10000;
         public const int Connections = 32;
 
         /// <summary>
         /// Command line arguments are:
         ///
-        /// <code>ORIGIN_CONTACT_POINT ORIGIN_USERNAME ORIGIN_PASSWORD TARGET_ASTRA_BUNDLE TARGET_USERNAME TARGET_PASSWORD</code>
+        /// <code>ORIGIN_CONTACT_POINT ORIGIN_USERNAME ORIGIN_PASSWORD TARGET_ASTRA_BUNDLE TARGET_USERNAME TARGET_PASSWORD TOKEN_RANGES </code>
         /// </summary>
         static void Main(string[] args)
         {
@@ -31,6 +31,12 @@ namespace DataChecker
             Trace.AutoFlush = true;
             Trace.Listeners.Add(new TextWriterTraceListener(Console.Out));
             Trace.Listeners.Add(new TextWriterTraceListener(File.Open("out.log", FileMode.Append, FileAccess.Write, FileShare.Read)));
+
+            if (args.Length == 7)
+            {
+                Program.Ranges = int.Parse(args[6]);
+            }
+
             var origin = Cluster.Builder()
                 .WithSocketOptions(new SocketOptions().SetStreamMode(true))
                 .WithQueryOptions(new QueryOptions().SetConsistencyLevel(ConsistencyLevel.LocalQuorum))
