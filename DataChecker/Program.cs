@@ -11,14 +11,14 @@ namespace DataChecker
     {
         public const int OriginReadParallelism = 4;
         public const int TargetReadParallelism = 32;
-        public const int TargetReadBatch = 512;
+        public static int TargetReadBatch = 512;
         public static int Ranges = 10000;
         public const int Connections = 32;
 
         /// <summary>
         /// Command line arguments are:
         ///
-        /// <code>ORIGIN_CONTACT_POINT ORIGIN_USERNAME ORIGIN_PASSWORD TARGET_ASTRA_BUNDLE TARGET_USERNAME TARGET_PASSWORD TOKEN_RANGES </code>
+        /// <code>ORIGIN_CONTACT_POINT ORIGIN_USERNAME ORIGIN_PASSWORD TARGET_ASTRA_BUNDLE TARGET_USERNAME TARGET_PASSWORD TOKEN_RANGES TARGET_READ_BATCH </code>
         /// </summary>
         static void Main(string[] args)
         {
@@ -32,9 +32,10 @@ namespace DataChecker
             Trace.Listeners.Add(new TextWriterTraceListener(Console.Out));
             Trace.Listeners.Add(new TextWriterTraceListener(File.Open("out.log", FileMode.Append, FileAccess.Write, FileShare.Read)));
 
-            if (args.Length == 7)
+            if (args.Length == 8)
             {
                 Program.Ranges = int.Parse(args[6]);
+                Program.TargetReadBatch = int.Parse(args[7]);
             }
 
             var origin = Cluster.Builder()
