@@ -19,7 +19,7 @@ namespace DataChecker
             actionBlock = new ActionBlock<Tuple<long, long>>(async tuple =>
             {
                 var stmt = (IStatement)new SimpleStatement(
-                    $"select keyname, value, ttl(value) as value_ttl from baselines.keyvalue WHERE token(keyname) >= {tuple.Item1} AND token(keyname) <= {tuple.Item2}");
+                    $"select key, value, ttl(value) as value_ttl from baselines.keyvalue WHERE token(key) >= {tuple.Item1} AND token(key) <= {tuple.Item2}");
                 stmt = stmt.SetPageSize(100000).SetIdempotence(true);
                 try
                 {

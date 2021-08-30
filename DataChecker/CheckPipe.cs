@@ -23,14 +23,14 @@ namespace DataChecker
             });
 
             var ps = session.Prepare(
-                "select keyname, value, ttl(value) as value_ttl from baselines.keyvalue WHERE keyname = ?").SetIdempotence(true);
+                "select key, value, ttl(value) as value_ttl from baselines.keyvalue WHERE key = ?").SetIdempotence(true);
 
             _transformBlock = new TransformBlock<Row[], CheckReport>(async rows =>
             {
                 var tasks = new Task<RowSet>[rows.Length];
                 for (var i = 0; i < rows.Length; i++)
                 {
-                    var stmt = ps.Bind(rows[i]["keyname"]);
+                    var stmt = ps.Bind(rows[i]["key"]);
                     tasks[i] = session.ExecuteAsync(stmt);
                 }
 
@@ -53,7 +53,7 @@ namespace DataChecker
                     {
                         var targetRow = (await targetRowTask.ConfigureAwait(false)).SingleOrDefault();
 
-                        if (object.Equals(rows[i]["keyname"], targetRow["keyname"]) &&
+                        if (object.Equals(rows[i]["key"], targetRow["key"]) &&
                             object.Equals(rows[i]["value"], targetRow["value"]) &&
                             object.Equals(rows[i]["value_ttl"], targetRow["value_ttl"]))
                         {
@@ -61,13 +61,13 @@ namespace DataChecker
                         }
                         else
                         {
-                            failedKeys.Add(rows[i]["keyname"]);
+                            failedKeys.Add(rows[i]["key"]);
                             countFail++;
                         }
                     }
                     catch (Exception ex)
                     {
-                        failedKeys.Add(rows[i]["keyname"]);
+                        failedKeys.Add(rows[i]["key"]);
                         countError++;
                         Trace.WriteLine("Error in CheckPipe: " + ex.ToString());
                         continue;
